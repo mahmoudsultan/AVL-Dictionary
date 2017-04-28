@@ -1,8 +1,12 @@
 
 class AVL-Tree:
-    """Clas encapsulating the AVL Tree
+    """Class encapsulating the AVL Tree
+    An empty subtree is defined to have a height of -1
     Use only the following methods:
     insert: to insert a value into the Tree
+    delete: delete a value from the Tree
+    search: returns the node containing the passed value or None if not found
+    height: prints the height of the tree
     """
     def insert(self, node, value):
         if self.root is None:
@@ -30,9 +34,18 @@ class AVL-Tree:
                 balance(node)
             else:
                 insert(node.left,value)
+    def delete(self,value):
 
-    def balance(self,node):
+    def search(self,value):
 
+    def height(self):
+        if self.root is None:
+            return -1
+        return self.root.height
+
+
+    def balance_if_needed(self,node):
+        if node.
 
 class Node:
     def height
