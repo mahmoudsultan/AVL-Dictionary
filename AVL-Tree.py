@@ -17,7 +17,7 @@ class AVLTree:
             return
         if node == -1:
             node = self.root #because python doesn't support overloading :/
-        print("\n new insert \n")
+        # print("\n new insert \n")
         if(value > node.value):
             #insert in right subtree
             if node.right is None:
@@ -51,9 +51,39 @@ class AVLTree:
         newNode.height = max(self.height(node.left), self.height(node.right))
 
     def delete(self,value):
-        return
-    def search(self,value):
-        return
+        node = self.search(value,self.root)
+        if node is None:
+            print("There is no value {} in the tree".format(value))
+            return
+        parent = node.parent
+        if node.left is None and node.right is None:
+            # if leaf we just remove it
+            self.deleteLeaf(node)
+        elif node.left != None:
+            successor = node.left
+            while successor.right != None:
+                successor = successor.right
+            node.value = successor.value
+            deleteLeaf(successor)
+        return node
+    def deleteLeaf(self,node):
+        parent = node.parent
+        if parent.left == node:
+            parent.left = None
+        else:
+            parent.right = None
+        node.parent = None
+    def search(self,value, node = -1):
+        if node == -1:
+            node = self.root
+        if node is None:
+            return None
+        if node.value == value:
+            return node
+        elif value < node.value:
+            return self.search(value,node.left)
+        else:
+            return self.search(value, node.right)
     def height(self, node):
         if node is None:
             return -1
@@ -126,23 +156,35 @@ class Node:
         self.right = None
 
 
-tree = AVLTree()
-tree.insert(41)
-tree.printTree()
-tree.insert(20)
-tree.printTree()
+if __name__ == '__main__':
 
-tree.insert(65)
-tree.printTree()
+    tree = AVLTree()
+    tree.insert(41)
+    tree.printTree()
+    print("\n\n\n")
+    tree.insert(20)
+    tree.printTree()
+    print("\n\n\n")
 
-tree.insert(11)
-tree.printTree()
+    tree.insert(65)
+    tree.printTree()
+    print("\n\n\n")
 
-tree.insert(29)
-tree.printTree()
+    tree.delete(65)
+    tree.printTree()
+    print("\n\n\n")
 
-tree.insert(26)
-tree.printTree()
+    tree.insert(11)
+    tree.printTree()
+    print("\n\n\n")
 
-tree.insert(50)
-tree.printTree()
+    tree.insert(29)
+    tree.printTree()
+    print("\n\n\n")
+
+    tree.insert(26)
+    tree.printTree()
+    print("\n\n\n")
+
+    tree.insert(50)
+    tree.printTree()
