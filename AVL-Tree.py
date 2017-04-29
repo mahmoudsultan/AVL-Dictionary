@@ -6,6 +6,7 @@ class AVLTree:
     delete: delete a value from the Tree
     search: returns the node containing the passed value or None if not found
     height: returns the height of the given node. Use height(tree.root) to get the height of the tree
+    printHeight: Recursively computes the height of the tree and prints it out
     """
 
     def __init__(self):
@@ -118,6 +119,15 @@ class AVLTree:
         else:
             # Already balanced
             return node
+    def printHeight(self, node = -1):
+        if node == -1:
+            node = self.root
+        if node is None:
+            return -1
+        firstHeight = self.printHeight(node.left)
+        secondHeight = self.printHeight(node.right)
+        bigger = max(firstHeight,secondHeight)
+        return bigger + 1
 
     def rotate(self,isLeft,node):
         """"isLeft is true if it is a left rotation"""
@@ -159,32 +169,35 @@ class Node:
 if __name__ == '__main__':
 
     tree = AVLTree()
-    tree.insert(41)
-    tree.printTree()
-    print("\n\n\n")
-    tree.insert(20)
-    tree.printTree()
-    print("\n\n\n")
-
-    tree.insert(65)
-    tree.printTree()
-    print("\n\n\n")
-
-    tree.delete(65)
-    tree.printTree()
-    print("\n\n\n")
-
-    tree.insert(11)
-    tree.printTree()
-    print("\n\n\n")
-
-    tree.insert(29)
-    tree.printTree()
-    print("\n\n\n")
-
-    tree.insert(26)
-    tree.printTree()
-    print("\n\n\n")
-
-    tree.insert(50)
-    tree.printTree()
+    l = [5,2,8,1,4,7,3]
+    for i in range(len(l)):
+        tree.insert(l[i])
+        tree.printTree()
+        print("\n\n\n")
+    print("Height is: {}".format(tree.printHeight()))
+    # tree.insert(2)
+    # tree.printTree()
+    # print("\n\n\n")
+    #
+    # tree.insert(8)
+    # tree.printTree()
+    # print("\n\n\n")
+    #
+    # tree.delete(1)
+    # tree.printTree()
+    # print("\n\n\n")
+    #
+    # tree.insert(11)
+    # tree.printTree()
+    # print("\n\n\n")
+    #
+    # tree.insert(29)
+    # tree.printTree()
+    # print("\n\n\n")
+    #
+    # tree.insert(26)
+    # tree.printTree()
+    # print("\n\n\n")
+    #
+    # tree.insert(50)
+    # tree.printTree()
