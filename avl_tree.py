@@ -55,7 +55,7 @@ class AVLTree:
         node = self.search(value,self.root)
         if node is None:
             print("There is no value {} in the tree".format(value))
-            return
+            return None
         parent = node.parent
         if node.left is None and node.right is None:
             # if leaf we just remove it
@@ -65,8 +65,9 @@ class AVLTree:
             while successor.right != None:
                 successor = successor.right
             node.value = successor.value
-            deleteLeaf(successor)
+            self.deleteLeaf(successor)
         return node
+
     def deleteLeaf(self,node):
         parent = node.parent
         if parent.left == node:
@@ -74,6 +75,7 @@ class AVLTree:
         else:
             parent.right = None
         node.parent = None
+
     def search(self,value, node = -1):
         if node == -1:
             node = self.root
@@ -85,6 +87,7 @@ class AVLTree:
             return self.search(value,node.left)
         else:
             return self.search(value, node.right)
+
     def height(self, node):
         if node is None:
             return -1
@@ -119,6 +122,7 @@ class AVLTree:
         else:
             # Already balanced
             return node
+
     def printHeight(self, node = -1):
         if node == -1:
             node = self.root
