@@ -32,7 +32,6 @@ def main():
                 display = not display
             elif command == 'print':
                 dict.print_words()
-
             continue
         else:
             command, args = line
