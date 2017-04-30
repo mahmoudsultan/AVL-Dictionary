@@ -89,7 +89,10 @@ class Dictionary:
         deletes the word from the dictionary returns false if the word is not
         in the dictionary
         """
-        return True if self.tree.delete(word) else False
+        if self.tree.delete(word):
+            self.size -= 1
+            return True
+        return False
 
     def batch_lookup(self, filename, Print=False):
         """
@@ -139,11 +142,16 @@ class Dictionary:
     def print_words(self):
         self.tree.printTree()
 
+    def print_info(self):
+        print("Tree Height: ", self.tree.printHeight())
+        print("Tree size: ", self.size)
+
 if __name__ == '__main__':
     my_dictionary = Dictionary()
     my_dictionary.batch_load("words.txt")
     print(my_dictionary.size)
     print(my_dictionary.lookup("Hello"))
+    print(my_dictionary.tree.printHeight())
     # print(my_dictionary.insert("Hello"))
     # print(my_dictionary.insert("goodbye"))
     # print(my_dictionary.delete("Hello"))

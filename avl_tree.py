@@ -15,6 +15,7 @@ class AVLTree:
         if self.root is None:
             #must be first insert
             self.root = Node(value)
+            self.root.height = 0
             return
         if node == -1:
             node = self.root #because python doesn't support overloading :/
