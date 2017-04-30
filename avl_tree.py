@@ -51,6 +51,9 @@ class AVLTree:
         else:
             newNode = self.balance_if_needed(node)
         newNode.height = max(self.height(node.left), self.height(node.right))
+        if newNode.parent is None:
+            #has to be new root
+            self.root = newNode
 
     def delete(self,value):
         node = self.search(value,self.root)
