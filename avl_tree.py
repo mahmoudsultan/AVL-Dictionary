@@ -97,7 +97,7 @@ class AVLTree:
         else:
             parent.right = None
         node.parent = None
-        print("BEFOREOOARFOIASDN BLAALncinasdifnsadifna")
+        # print("BEFOREOOARFOIASDN BLAALncinasdifnsadifna")
         self.printTree()
         self.balance_if_needed(parent)
 
@@ -133,8 +133,8 @@ class AVLTree:
         returns the new node that is the root node after balancing"""
         if node is None:
             return
-        height = abs(self.height(node.left) - self.height(node.right))
-        print("HEIGHT IS ADSJFIALSJFALISFD: {}".format(height))
+        height = abs(self.printHeight(node.left) - self.printHeight(node.right))
+        # print("HEIGHT IS ADSJFIALSJFALISFD: {}".format(height))
         if  height > 1:
             isRight = self.height(node.right) > self.height(node.left)
             biggerChild = node.right if isRight else node.left
@@ -199,14 +199,11 @@ class AVLTree:
             self.root = finalNode
         #temporarly
         if finalNode.left != None:
-            finalNode.left.height = self.printHeight(finalNode.left)
+            finalNode.left.height = max(self.height(finalNode.left.left), self.height(finalNode.left.right)) + 1
         if finalNode.right != None:
-            finalNode.right.height = self.printHeight(finalNode.right)
-        finalNode.height = self.printHeight(finalNode)
+            finalNode.right.height = max(self.height(finalNode.right.left), self.height(finalNode.right.right)) + 1
         if parent != None:
-            parent.height = self.printHeight(parent)
-        # print("Final node after is: {} \n \n".format(finalNode.value))
-        # self.printTree()
+            parent.height = max(self.height(finalNode.left), self.height(finalNode.right)) + 1
 
 
 class Node:
