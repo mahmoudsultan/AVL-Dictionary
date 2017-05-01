@@ -70,11 +70,26 @@ class AVLTree:
                 successor = successor.right
             node.value = successor.value
             self.deleteLeaf(successor)
+        else:
+            #node.right is not None
+            successor = node.right
+            while successor.left != None:
+                successor = successor.left
+            node.value = successor.value
+            self.deleteLeaf(successor)
+
+        print("\n AVL PRINTING \n")
+        self.printTree()
+        print("\n")
         return node
 
     def deleteLeaf(self,node):
         parent = node.parent
-        if parent.left == node:
+        if parent is None:
+            #must be root
+            self.root = None
+
+        elif parent.left == node:
             parent.left = None
         else:
             parent.right = None
