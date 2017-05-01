@@ -25,7 +25,7 @@ class AVLTree:
             if node.right is None:
                 child = Node(value)
                 child.parent = node
-                child.height = -1
+                child.height = 0
                 node.right = child
             else:
                 self.insert(value,node.right)
@@ -33,7 +33,7 @@ class AVLTree:
             if node.left is None:
                 child = Node(value)
                 child.parent = node
-                child.height = -1
+                child.height = 0
                 node.left = child
             else:
                 self.insert(value,node.left)
@@ -41,42 +41,45 @@ class AVLTree:
         parent = node.parent
         newNode = None
         if parent != None:
-            newNode = self.balance_if_needed(node)
             isLeftChild = parent.left == node
-            newNode.parent = parent
-            if isLeftChild:
-                parent.left = newNode
-            else:
-                parent.right = newNode
+            newNode = self.balance_if_needed(node)
         else:
             newNode = self.balance_if_needed(node)
-        newNode.height = max(self.height(node.left), self.height(node.right))
-        if newNode.parent is None:
-            #has to be new root
+        if newNode != None:
             self.root = newNode
+            newNode.height = max(self.height(node.left), self.height(node.right)) + 1
 
-    def delete(self,value):
-        node = self.search(value,self.root)
+    def delete(self,value, node = -1):
+        if node == -1:
+            node = self.search(value,self.root)
+        # print("On Delete ROOT IS: {}".format(self.root.value))
         if node is None:
-            print("There is no value {} in the tree".format(value))
+            # print("There is no value {} in the tree".format(value))
             return None
         parent = node.parent
         if node.left is None and node.right is None:
             # if leaf we just remove it
             self.deleteLeaf(node)
-        elif node.left != None:
+        elif node.left is None or node.right is None:
+            child = node.left if node.left != None else node.right
+            child.parent = parent
+            if parent != None:
+                if parent.left == node:
+                    parent.left = child
+                else:
+                    parent.right = child
+            else:
+                self.root = child
+            self.balance_if_needed(parent)
+            node.parent = None
+        else:
+            #both of them are not none
             successor = node.left
             while successor.right != None:
                 successor = successor.right
             node.value = successor.value
-            self.deleteLeaf(successor)
-        else:
-            #node.right is not None
-            successor = node.right
-            while successor.left != None:
-                successor = successor.left
-            node.value = successor.value
-            self.deleteLeaf(successor)
+            successor.value = value
+            self.delete(value,successor)
 
         print("\n AVL PRINTING \n")
         self.printTree()
@@ -94,6 +97,9 @@ class AVLTree:
         else:
             parent.right = None
         node.parent = None
+        print("BEFOREOOARFOIASDN BLAALncinasdifnsadifna")
+        self.printTree()
+        self.balance_if_needed(parent)
 
     def search(self,value, node = -1):
         if node == -1:
@@ -116,26 +122,26 @@ class AVLTree:
         if node == -1:
             node = self.root
         if node is None:
+            # print("ROOT IS: {}".format(self.root.value))
             return
         self.printTree(node.left)
-        print(node.value)
+        print("v: {} r: {} l: {} h: {}".format(node.value, node.left != None, node.right != None, node.height))
         self.printTree(node.right)
 
     def balance_if_needed(self,node):
         """Treats this node as the root node of 2 subtrees and balances the given graph if it is needed
         returns the new node that is the root node after balancing"""
-        if abs(self.height(node.left) - self.height(node.right)) > 1:
+        if node is None:
+            return
+        height = abs(self.height(node.left) - self.height(node.right))
+        print("HEIGHT IS ADSJFIALSJFALISFD: {}".format(height))
+        if  height > 1:
             isRight = self.height(node.right) > self.height(node.left)
             biggerChild = node.right if isRight else node.left
             isChildRight = self.height(biggerChild.right)  > self.height(biggerChild.left)
             if isRight != isChildRight:
                 # Perform a rotation for child first
                 newRoot = self.rotate(isChildRight, biggerChild)
-                newRoot.parent = node
-                if isRight:
-                    node.right = newRoot
-                else:
-                    node.left = newRoot
             return self.rotate(isRight,node)
 
         else:
@@ -154,25 +160,53 @@ class AVLTree:
 
     def rotate(self,isLeft,node):
         """"isLeft is true if it is a left rotation"""
+        parent = node.parent
+        parentLeft = False
+        if parent != None and parent.left == node:
+            parentLeft = True
+        finalNode = node.right
         if isLeft:
             finalNode = node.right
-            oldLeft = node.right.left
-            node.right.left = node
-            node.parent = node.right.left
+            oldLeft = finalNode.left
+            finalNode.left = node
+            finalNode.parent = node.parent
+            node.parent = finalNode
             node.right = oldLeft
             if oldLeft != None:
                 oldLeft.parent = node
-            return finalNode
 
         else:
+            # print("Final node before is: {} \n \n".format(finalNode.value))
+            # self.printTree()
             finalNode = node.left
-            oldRight = node.left.right
-            node.left.right = node
-            node.parent = node.left.right
+            oldRight = finalNode.right
+            finalNode.right = node
+            finalNode.parent = node.parent
+            node.parent = finalNode
             node.left = oldRight
             if oldRight != None:
                 oldRight.parent = node
-            return finalNode
+            # print("Final node here is: {} \n \n".format(finalNode.value))
+            # self.printTree()
+        #adjusting the parent pointer
+        if parent != None:
+            if parentLeft:
+                parent.left = finalNode
+            else:
+                parent.right = finalNode
+        else:
+            #has to be the root
+            self.root = finalNode
+        #temporarly
+        if finalNode.left != None:
+            finalNode.left.height = self.printHeight(finalNode.left)
+        if finalNode.right != None:
+            finalNode.right.height = self.printHeight(finalNode.right)
+        finalNode.height = self.printHeight(finalNode)
+        if parent != None:
+            parent.height = self.printHeight(parent)
+        # print("Final node after is: {} \n \n".format(finalNode.value))
+        # self.printTree()
 
 
 class Node:
@@ -187,40 +221,3 @@ class Node:
         self.parent = None
         self.left = None
         self.right = None
-
-
-if __name__ == '__main__':
-
-    tree = AVLTree()
-    l = [5,2,8,1,4,7,3]
-    for i in range(len(l)):
-        tree.insert(l[i])
-        tree.printTree()
-        print("\n\n\n")
-    print("Height is: {}".format(tree.printHeight()))
-    # tree.insert(2)
-    # tree.printTree()
-    # print("\n\n\n")
-    #
-    # tree.insert(8)
-    # tree.printTree()
-    # print("\n\n\n")
-    #
-    # tree.delete(1)
-    # tree.printTree()
-    # print("\n\n\n")
-    #
-    # tree.insert(11)
-    # tree.printTree()
-    # print("\n\n\n")
-    #
-    # tree.insert(29)
-    # tree.printTree()
-    # print("\n\n\n")
-    #
-    # tree.insert(26)
-    # tree.printTree()
-    # print("\n\n\n")
-    #
-    # tree.insert(50)
-    # tree.printTree()
